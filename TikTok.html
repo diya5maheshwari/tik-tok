@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tik-Tok</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+           display: flex;
+           justify-content: center;
+           align-items: center;
+            height: 100vh;
+            width: 100vw;
+            /* background:transparent; */
+            /* background-color: blanchedalmond; */
+        }
+
+        .box {
+
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 0.4fr 1fr 1fr 1fr;
+            height: 500px;
+            width: 500px;
+            border-radius: 2%;
+            /* justify-content: center; */
+            position: relative;
+        }
+
+        button {
+            font-size: 25px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            background-color: black;
+            border: 1px solid white;
+            transition: background-color 0.4s ease;
+
+        }
+
+        button.clicked {
+            background-color: white;
+            color: black;
+            border: 3px solid black;
+
+        }
+
+        #message {
+            font-size: 25px;
+            font-family: Georgia;
+            font-weight: bold;
+            color: darksalmon;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 20px;
+            width: 20px;
+            background-color: rgb(144, 178, 207); */
+            grid-column: span 3;
+
+        }
+
+        .restart {
+            position: absolute;
+            /* justify-content: center; */
+            top: 600px;
+            /* align-items: center; */
+
+            padding-left: 10px;
+            padding-right: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin-top: 12px;
+            border: none;
+            height: 50px;
+            width: 200px;
+            background-color: rgba(70, 70, 70, 0.623);
+            border-radius: 2px;
+            font-style: solid;
+            font-size: 20px;
+            color: white;
+            border-radius: 25px;
+            transition: opacity 0.5s;
+            transition: background-color 1s,
+                color 1s;
+        }
+        /* .main{
+            background-color:gainsboro;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* position: ; */
+
+
+        /* } */ 
+/* 
+        .restart:hover {
+            background-color: ;
+            cursor: pointer;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.6);
+            color: black;
+        } */
+         .start-screen{
+            position:absolute;
+            display: flex;
+            justify-content: center;
+          text-align: center;
+          align-items: center;
+          height: 100vh;
+          width: 100vw;
+          /* background-color:rgba(0,0,0,0.7); */
+          background-color:rgba(0, 0, 0, 0.591);
+          color: rgba(255, 255, 255, 0.998);
+          font-size: 28px;
+          font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          font-weight: bolder;
+          z-index: 1;
+          /* filter: blur(3px); */
+          /* transition: filter 0.5s ease; */
+        }
+        /* .start-screen.active{
+            background-color: transparent;
+        } */
+        .text{
+            background-color: rgba(29, 28, 28, 0.693);
+            height: 80px;
+            width: 100%;
+            padding: 10px 10px ;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="start-screen" id="startScreen">
+        <div class="text" id="text"><h1>LET'S  PLAY  THE  GAME</h1></div>
+    </div>
+        <div class="box" id="box">
+            <div id="message"></div>
+    
+    
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+    
+        </div>
+        <button class="restart" onclick="restart();">Restart</button>
+
+
+</body>
+<script>
+    let btn = document.querySelectorAll('.btn');
+    let message = document.getElementById('message');
+    let value = 1;
+    let winers = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8]
+
+    ];
+    let xmove = [];
+    let omove = [];
+    let text=document.getElementById('text');
+
+    text.addEventListener('click',()=>{
+        // console.log('clicked');
+        // startScreen.classList.remove('active');
+        document.getElementById('startScreen').style.display = 'none';
+            // Show the game board
+            document.getElementById('box').style.display = 'grid';
+        // box.style.display='none';
+    });
+
+    btn.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            // console.log('clicked');
+            button.innerHTML = 'X';
+            if (button.innerHTML) {
+                if (value % 2 == 0) {
+                    button.innerHTML = 'X';
+                    xmove.push(index);
+                }
+                else {
+                    button.innerHTML = '0';
+                    omove.push(index);
+                }
+                value++;
+                // console.log("omove is" ,omove);
+                // console.log("xmove is", xmove);
+                button.classList.add('clicked');
+            }
+
+            if (checkWinner(xmove)) {
+                message.innerHTML = 'player x is win!';
+                disableButtons();
+                // restart();
+            }
+            else if (checkWinner(omove)) {
+                message.innerHTML = 'player o is win!';
+                disableButtons();
+                // restart();
+
+            }
+            else if (xmove.length + omove.length === 9) {
+                message.innerHTML = "IT IS DRAW !";
+            }
+
+
+            // console.log(message);
+        });
+    });
+    function checkWinner(moves) {
+        return winers.some(combination => combination.every(index => moves.includes(index)))
+    }
+    function disableButtons() {
+        btn.forEach(button => {
+            button.disabled = true;
+        });
+    }
+
+    function restart() {
+        btn.forEach(button => {
+            button.disabled = false;
+            button.innerHTML='';
+            button.classList.remove('clicked');
+        });
+
+        message.innerHTML='';
+        xmove=[];
+        omove=[];
+        value=1;
+    }
+
+
+
+
+</script>
+
+</html>
